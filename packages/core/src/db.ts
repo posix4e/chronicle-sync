@@ -1,8 +1,9 @@
-import { addRxPlugin } from 'rxdb';
-import { getRxStorageDexie } from 'rxdb/plugins/dexie';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+import type { RxCollection, RxDatabase } from 'rxdb';
+import type { RxReplicationWriteToMasterRow } from 'rxdb/dist/types/plugins/replication';
+import type { GraphQLServerUrl } from 'rxdb/dist/types/plugins/replication-graphql';
+import { replicateGraphQL } from 'rxdb/plugins/replication-graphql';
 
-addRxPlugin(RxDBDevModePlugin);
+
 
 
 
@@ -51,8 +52,13 @@ export const getDatabase = async () => {
         find: jest.fn().mockReturnValue({
           exec: jest.fn().mockResolvedValue([])
         })
-      }
-    } as any);
+      },
+      name: 'test-db',
+      token: 'test-token',
+      storage: {} as RxDatabase['storage'],
+      instanceCreationOptions: {},
+      addCollections: jest.fn()
+    } as unknown as RxDatabase);
 
     const db = await dbPromise;
     await db.addCollections({
@@ -77,10 +83,10 @@ export const setupSync = async (syncUrl: string) => {
   const db = await getDatabase();
   return replicateGraphQL({
     collection: db.history,
-    url: syncUrl,
+    url: { http: syncUrl } as GraphQLServerUrl,
     push: {
       batchSize: 50,
-      queryBuilder: (docs: HistoryEntry[]) => ({
+      queryBuilder: (docs: RxReplicationWriteToMasterRow<HistoryEntry>[]) => ({
         query: `
           mutation InsertHistoryEntries($entries: [HistoryEntry!]!) {
             insertHistoryEntries(entries: $entries)
@@ -92,7 +98,7 @@ export const setupSync = async (syncUrl: string) => {
       })
     },
     pull: {
-      queryBuilder: (lastId: string | null) => ({
+      queryBuilder: (lastId: string | null | undefined) => ({
         query: `
           query GetHistoryEntries($lastId: String) {
             historyEntries(lastId: $lastId) {
