@@ -18,10 +18,33 @@ A cross-platform browser history synchronization solution that works across iOS,
 
 ### Prerequisites
 
-- Node.js >= 16
+- [nvm](https://github.com/nvm-sh/nvm) (Node Version Manager)
+- Node.js 20.10.0 (installed automatically via nvm)
 - React Native development environment
 - Xcode (for iOS development)
 - Android Studio (for Android development)
+
+### Node.js Setup
+
+This project uses `nvm` to manage Node.js versions. To set up your development environment:
+
+1. Install nvm:
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+2. Restart your terminal or run:
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+```
+
+3. Run the setup script:
+```bash
+./scripts/setup.sh
+```
+
+This will install the correct Node.js version and project dependencies.
 
 ### Setup
 
