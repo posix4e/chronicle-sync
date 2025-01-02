@@ -17,7 +17,13 @@
     "baseUrl": ".",
     "paths": {
       "@chronicle-sync/*": ["packages/*/src"]
-    }
+    },
+    "types": ["jest", "node", "@testing-library/jest-dom"]
   },
+  "include": [
+    "packages/*/src/**/*",
+    "apps/*/src/**/*",
+    "src/types/**/*"
+  ],
   "exclude": ["node_modules"]
 }

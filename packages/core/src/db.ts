@@ -1,13 +1,9 @@
-import {
-  createRxDatabase,
-  addRxPlugin,
-  RxDatabase,
-  RxCollection,
-} from 'rxdb';
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { RxDBReplicationPlugin } from 'rxdb/plugins/replication';
+import { createRxDatabase } from 'rxdb/plugins/core';
+import { getRxStorageDexie } from 'rxdb/plugins/dexie';
+import { replicateGraphQL } from 'rxdb/plugins/replication-graphql';
+import type { RxDatabase, RxCollection } from 'rxdb';
 
-addRxPlugin(RxDBReplicationPlugin);
+
 
 export interface HistoryEntry {
   id: string;
@@ -74,7 +70,8 @@ export const addHistoryEntry = async (entry: Omit<HistoryEntry, 'id'>) => {
 
 export const setupSync = async (syncUrl: string) => {
   const db = await getDatabase();
-  return db.history.syncGraphQL({
+  return replicateGraphQL({
+    collection: db.history,
     url: syncUrl,
     push: {
       batchSize: 50,
