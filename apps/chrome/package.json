@@ -11,6 +11,9 @@
     "@chronicle-sync/core": "0.1.0",
     "webextension-polyfill": "^0.10.0"
   },
+  "peerDependencies": {
+    "react": "18.2.0"
+  },
   "devDependencies": {
     "@types/chrome": "^0.0.254",
     "@types/webextension-polyfill": "^0.10.7",

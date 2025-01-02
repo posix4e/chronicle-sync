@@ -11,8 +11,11 @@
     "@chronicle-sync/core": "0.1.0",
     "webextension-polyfill": "^0.10.0"
   },
+  "peerDependencies": {
+    "react": "18.2.0"
+  },
   "devDependencies": {
-    "@types/firefox-webext-browser": "^111.0.5",
+    "@types/firefox-webext-browser": "^120.0.0",
     "@types/webextension-polyfill": "^0.10.7",
     "copy-webpack-plugin": "^11.0.0",
     "ts-loader": "^9.5.1",
