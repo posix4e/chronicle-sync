@@ -1,7 +1,10 @@
-import { createRxDatabase } from 'rxdb/plugins/core';
-import { getRxStorageDexie } from 'rxdb/plugins/dexie';
+import {
+  createRxDatabase,
+  RxDatabase,
+  RxCollection,
+} from 'rxdb';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { replicateGraphQL } from 'rxdb/plugins/replication-graphql';
-import type { RxDatabase, RxCollection } from 'rxdb';
 
 
 
@@ -75,7 +78,7 @@ export const setupSync = async (syncUrl: string) => {
     url: syncUrl,
     push: {
       batchSize: 50,
-      queryBuilder: (docs) => ({
+      queryBuilder: (docs: HistoryEntry[]) => ({
         query: `
           mutation InsertHistoryEntries($entries: [HistoryEntry!]!) {
             insertHistoryEntries(entries: $entries)
@@ -87,7 +90,7 @@ export const setupSync = async (syncUrl: string) => {
       })
     },
     pull: {
-      queryBuilder: (lastId) => ({
+      queryBuilder: (lastId: string | null) => ({
         query: `
           query GetHistoryEntries($lastId: String) {
             historyEntries(lastId: $lastId) {
