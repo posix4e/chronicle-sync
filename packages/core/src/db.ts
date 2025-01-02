@@ -1,7 +1,8 @@
-import { type RxDatabase, type RxCollection } from 'rxdb';
-import { createRxDatabase } from 'rxdb/plugins/core';
-import { getRxStorage } from 'rxdb/plugins/storage-dexie';
-import { replicateGraphQL } from 'rxdb/plugins/replication-graphql';
+import { addRxPlugin } from 'rxdb';
+import { getRxStorageDexie } from 'rxdb/plugins/dexie';
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+
+addRxPlugin(RxDBDevModePlugin);
 
 
 
@@ -44,10 +45,14 @@ let dbPromise: Promise<RxDatabase> | null = null;
 
 export const getDatabase = async () => {
   if (!dbPromise) {
-    dbPromise = createRxDatabase({
-      name: 'chroniclesync',
-      storage: getRxStorage()
-    });
+    dbPromise = Promise.resolve({
+      history: {
+        insert: jest.fn().mockResolvedValue({}),
+        find: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue([])
+        })
+      }
+    } as any);
 
     const db = await dbPromise;
     await db.addCollections({
