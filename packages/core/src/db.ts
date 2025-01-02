@@ -1,9 +1,6 @@
-import {
-  createRxDatabase,
-  RxDatabase,
-  RxCollection,
-} from 'rxdb';
-import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { type RxDatabase, type RxCollection } from 'rxdb';
+import { createRxDatabase } from 'rxdb/plugins/core';
+import { getRxStorage } from 'rxdb/plugins/storage-dexie';
 import { replicateGraphQL } from 'rxdb/plugins/replication-graphql';
 
 
@@ -49,7 +46,7 @@ export const getDatabase = async () => {
   if (!dbPromise) {
     dbPromise = createRxDatabase({
       name: 'chroniclesync',
-      storage: getRxStorageDexie()
+      storage: getRxStorage()
     });
 
     const db = await dbPromise;

@@ -3,8 +3,9 @@ module.exports = {
   testEnvironment: 'jsdom',
   roots: ['<rootDir>/packages', '<rootDir>/apps'],
   moduleNameMapper: {
-    '^@chronicle-sync/([^/]*)(.*)$': '<rootDir>/packages/$1/src$2',
+    '^@chronicle-sync/(.*)$': '<rootDir>/packages/$1/src',
   },
+  moduleDirectories: ['node_modules', '<rootDir>'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   collectCoverageFrom: [
