@@ -1,0 +1,30 @@
+version: 1
+llm:
+  provider: anthropic
+  model: claude-2.1
+  api_key: ${LLM_API_KEY}
+
+resolver:
+  enabled: true
+  paths:
+    - "**/*.ts"
+    - "**/*.tsx"
+    - "**/*.js"
+    - "**/*.jsx"
+  exclude:
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - "coverage/**"
+    - ".git/**"
+
+actions:
+  - name: test
+    command: npm test
+    description: Run unit tests
+  - name: lint
+    command: npm run lint
+    description: Run linter
+  - name: build
+    command: npm run build
+    description: Build the project
