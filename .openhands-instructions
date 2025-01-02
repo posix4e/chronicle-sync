@@ -1,0 +1,33 @@
+# OpenHands Instructions
+
+## GitHub Actions Guidelines
+- Do not modify GitHub Actions workflow files directly
+- If workflow changes are needed, create new action files in the root directory
+- Focus on modifying the scripts that actions call instead of the actions themselves
+
+## Repository Structure
+- Main application code is in `/src`
+- Multiple app variants in `/apps` (web, mobile, chrome, firefox)
+- Core packages in `/packages/core`
+- Scripts for automation in `/scripts`
+
+## Development Guidelines
+1. When making code changes:
+   - Ensure proper test coverage
+   - Add tests in appropriate test directories
+   - Run tests to verify changes
+
+2. For configuration changes:
+   - No tests required for documentation or config files
+   - Maintain consistent formatting
+   - Follow existing patterns
+
+3. Script Modifications:
+   - Scripts in `/scripts` can be modified as needed
+   - Ensure backward compatibility
+   - Add proper error handling
+
+## Testing
+- Jest is used for testing (see jest.config.js)
+- E2E tests configuration in jest.e2e.config.js
+- Run appropriate test suite before submitting changes

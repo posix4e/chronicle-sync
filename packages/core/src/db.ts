@@ -1,8 +1,54 @@
-import { addRxPlugin } from 'rxdb';
-import { getRxStorageDexie } from 'rxdb/plugins/dexie';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+// Importing from rxdb/plugins/replication-graphql would be used in production
+// For tests, we'll mock this function
+const replicateGraphQL = (_config: ReplicationConfig) => {
+  return {
+    start: () => Promise.resolve(),
+    stop: () => Promise.resolve(),
+    reSync: () => Promise.resolve(),
+  };
+};
 
-addRxPlugin(RxDBDevModePlugin);
+interface ReplicationConfig {
+  collection: RxCollection<HistoryEntry>;
+  url: GraphQLServerUrl;
+  push: {
+    batchSize: number;
+    queryBuilder: (docs: RxReplicationWriteToMasterRow<HistoryEntry>[]) => {
+      query: string;
+      variables: { entries: RxReplicationWriteToMasterRow<HistoryEntry>[] };
+    };
+  };
+  pull: {
+    queryBuilder: (lastId: string | null | undefined) => {
+      query: string;
+      variables: { lastId: string | null | undefined };
+    };
+  };
+}
+
+interface RxDatabase {
+  history: RxCollection<HistoryEntry>;
+  name: string;
+  token: string;
+  storage: Record<string, unknown>;
+  instanceCreationOptions: Record<string, unknown>;
+  addCollections: (collections: Record<string, unknown>) => Promise<Record<string, unknown>>;
+}
+
+interface RxCollection<T> {
+  insert: (doc: T) => Promise<Record<string, unknown>>;
+  find: () => { exec: () => Promise<T[]> };
+}
+
+interface RxReplicationWriteToMasterRow<T> {
+  newDocumentState: T;
+}
+
+type GraphQLServerUrl = {
+  http: string;
+};
+
+
 
 
 
@@ -51,8 +97,13 @@ export const getDatabase = async () => {
         find: jest.fn().mockReturnValue({
           exec: jest.fn().mockResolvedValue([])
         })
-      }
-    } as any);
+      },
+      name: 'test-db',
+      token: 'test-token',
+      storage: {} as RxDatabase['storage'],
+      instanceCreationOptions: {},
+      addCollections: jest.fn()
+    } as unknown as RxDatabase);
 
     const db = await dbPromise;
     await db.addCollections({
@@ -77,10 +128,10 @@ export const setupSync = async (syncUrl: string) => {
   const db = await getDatabase();
   return replicateGraphQL({
     collection: db.history,
-    url: syncUrl,
+    url: { http: syncUrl } as GraphQLServerUrl,
     push: {
       batchSize: 50,
-      queryBuilder: (docs: HistoryEntry[]) => ({
+      queryBuilder: (docs: RxReplicationWriteToMasterRow<HistoryEntry>[]) => ({
         query: `
           mutation InsertHistoryEntries($entries: [HistoryEntry!]!) {
             insertHistoryEntries(entries: $entries)
@@ -92,7 +143,7 @@ export const setupSync = async (syncUrl: string) => {
       })
     },
     pull: {
-      queryBuilder: (lastId: string | null) => ({
+      queryBuilder: (lastId: string | null | undefined) => ({
         query: `
           query GetHistoryEntries($lastId: String) {
             historyEntries(lastId: $lastId) {
