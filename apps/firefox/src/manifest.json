@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "Chronicle Sync",
+  "version": "0.1.0",
+  "description": "Cross-platform browser history synchronization",
+  "permissions": [
+    "history",
+    "storage",
+    "tabs",
+    "https://*.chronicle-sync.com/*"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "chronicle-sync@all-hands.dev",
+      "strict_min_version": "57.0"
+    }
+  }
+}

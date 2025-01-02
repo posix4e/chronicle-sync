@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all packages
+        run: |
+          npm run build:chrome
+          npm run build:firefox
+          npm run build:web
+
+      - name: Create Chrome extension package
+        run: |
+          cd apps/chrome/dist
+          zip -r ../../../chronicle-sync-chrome.zip .
+
+      - name: Create Firefox extension package
+        run: |
+          cd apps/firefox/dist
+          zip -r ../../../chronicle-sync-firefox.zip .
+
+      - name: Upload Chrome extension
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./chronicle-sync-chrome.zip
+          asset_name: chronicle-sync-chrome.zip
+          asset_content_type: application/zip
+
+      - name: Upload Firefox extension
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./chronicle-sync-firefox.zip
+          asset_name: chronicle-sync-firefox.zip
+          asset_content_type: application/zip
+
+      - name: Deploy web interface
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          cd apps/web
+          aws s3 sync dist/ s3://chronicle-sync-web/ --delete
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
