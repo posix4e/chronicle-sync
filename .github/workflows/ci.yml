@@ -27,27 +27,24 @@ jobs:
       
       - name: E2E tests
         run: npm run test:e2e
-
   deploy:
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
       
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      
-      - name: Deploy backend
+          python-version: '3.11'
+          
+      - name: Install Ansible
         run: |
-          cd infrastructure
-          npm ci
-          npm run deploy
+          pip install --upgrade pip
+          python -m pip install ansible
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i localhost, deploy.yml --extra-vars "new_relic_license_key=${NEW_RELIC_LICENSE_KEY}"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY}}
