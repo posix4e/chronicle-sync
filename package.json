@@ -25,9 +25,12 @@
     "start": "npm run build:web && npm run start:server"
   },
   "dependencies": {
+    "@types/uuid": "^10.0.0",
     "express": "^4.21.2",
     "react": "18.2.0",
-    "react-native": "0.73.1"
+    "react-native": "0.73.1",
+    "rxdb": "^16.0.0",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.23.6",

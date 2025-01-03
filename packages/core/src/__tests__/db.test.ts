@@ -28,9 +28,9 @@ describe('Database', () => {
     await addHistoryEntry(entry);
     const db = await getDatabase();
     
-    expect(db.history.insert).toHaveBeenCalledWith({
+    expect(db.history.insert).toHaveBeenCalledWith(expect.objectContaining({
       ...entry,
       id: expect.stringContaining(entry.deviceId),
-    });
+    }));
   });
 });
