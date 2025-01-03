@@ -1,18 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import App from './App'; // Ensure this import is correct
 
-const Popup = () => {
-  return (
-    <div>
-      <h1>Chronicle Sync</h1>
-      <p>Welcome to Chronicle Sync!</p>
-    </div>
-  );
-};
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = createRoot(rootElement);
+  root.render(<App />);
+}
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Popup />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
