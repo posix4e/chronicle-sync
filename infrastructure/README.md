@@ -27,10 +27,10 @@ aws ecr create-repository --repository-name openhands-backend
 
 2. Build and push the Docker image:
 ```bash
-aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-west-2.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com
 docker build -t openhands-backend .
-docker tag openhands-backend:latest $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-west-2.amazonaws.com/openhands-backend:latest
-docker push $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-west-2.amazonaws.com/openhands-backend:latest
+docker tag openhands-backend:latest $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/openhands-backend:latest
+docker push $(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/openhands-backend:latest
 ```
 
 3. Initialize Terraform:
@@ -41,7 +41,7 @@ terraform init
 
 4. Apply the infrastructure:
 ```bash
-terraform apply -var="ecr_repository_url=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-west-2.amazonaws.com/openhands-backend"
+terraform apply -var="ecr_repository_url=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.us-east-1.amazonaws.com/openhands-backend"
 ```
 
 ### Cleanup
