@@ -1,4 +1,5 @@
 import { addHistoryEntry, getDatabase } from '../db';
+export {};
 
 jest.mock('rxdb', () => ({
   createRxDatabase: jest.fn().mockResolvedValue({
