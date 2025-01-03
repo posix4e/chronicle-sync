@@ -1,0 +1,107 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "BackendStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "BackendStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "BackendStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://181997277373/us-east-1",
+      "properties": {
+        "templateFile": "BackendStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::181997277373:role/cdk-hnb659fds-deploy-role-181997277373-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::181997277373:role/cdk-hnb659fds-cfn-exec-role-181997277373-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-181997277373-us-east-1/ee084ae3311bdcca2f09f78cf62cb7da2e0e4d8a848abae04ac011fc8679848d.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "BackendStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::181997277373:role/cdk-hnb659fds-lookup-role-181997277373-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "BackendStack.assets"
+      ],
+      "metadata": {
+        "/BackendStack/BackendBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackendBucket9820313A"
+          }
+        ],
+        "/BackendStack/BackendBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackendBucketPolicy39E3C0B9"
+          }
+        ],
+        "/BackendStack/BackendBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackendBucketAutoDeleteObjectsCustomResource9B03076F"
+          }
+        ],
+        "/BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/BackendStack/BucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketName"
+          }
+        ],
+        "/BackendStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/BackendStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/BackendStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "BackendStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
