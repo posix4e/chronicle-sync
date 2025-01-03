@@ -23,6 +23,31 @@ jobs:
           npm run build:firefox
           npm run build:web
 
+      - name: Validate Chrome extension
+        run: |
+          cd apps/chrome/dist
+          # Check if manifest.json exists and is valid JSON
+          if ! [ -f manifest.json ]; then
+            echo "Error: manifest.json not found"
+            exit 1
+          fi
+          if ! jq empty manifest.json; then
+            echo "Error: manifest.json is not valid JSON"
+            exit 1
+          fi
+          # Check for required files
+          for file in background.js popup.js popup.html; do
+            if ! [ -f "$file" ]; then
+              echo "Error: Required file $file not found"
+              exit 1
+            fi
+          done
+          # Check icons directory
+          if ! [ -d icons ] || ! [ -f icons/icon16.png ] || ! [ -f icons/icon48.png ] || ! [ -f icons/icon128.png ]; then
+            echo "Error: Missing required icons"
+            exit 1
+          fi
+
       - name: Create Chrome extension package
         run: |
           cd apps/chrome/dist
