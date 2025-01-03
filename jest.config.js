@@ -5,7 +5,8 @@ module.exports = {
   moduleNameMapper: {
     '^@chronicle-sync/(.*)$': '<rootDir>/packages/$1/src',
     '^rxdb$': '<rootDir>/node_modules/rxdb',
-    '^rxdb/plugins/(.*)$': '<rootDir>/node_modules/rxdb/dist/lib/plugins/$1'
+    '^rxdb/plugins/(.*)$': '<rootDir>/node_modules/rxdb/dist/lib/plugins/$1',
+    '^rxdb/dist/lib/plugins/(.*)$': '<rootDir>/node_modules/rxdb/dist/lib/plugins/$1'
   },
   moduleDirectories: ['node_modules', '<rootDir>'],
   transformIgnorePatterns: [
