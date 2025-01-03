@@ -19,7 +19,10 @@
     "build:chrome": "cd apps/chrome && npm run build",
     "build:firefox": "cd apps/firefox && npm run build",
     "build:web": "cd apps/web && npm run build",
-    "start": "cd apps/mobile && react-native start"
+    "start:mobile": "cd apps/mobile && react-native start",
+    "start:web": "cd apps/web && npm start",
+    "start:server": "node server.js",
+    "start": "npm run build:web && npm run start:server"
   },
   "dependencies": {
     "express": "^4.21.2",
