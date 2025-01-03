@@ -10,11 +10,6 @@ variable "project_name" {
   default     = "openhands"
 }
 
-variable "ecr_repository_url" {
-  description = "URL of the ECR repository"
-  type        = string
-}
-
 data "aws_availability_zones" "available" {
   state = "available"
 }
