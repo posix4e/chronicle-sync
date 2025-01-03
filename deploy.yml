@@ -41,6 +41,11 @@
       args:
         chdir: "{{ project_dir }}"
 
+    - name: Build web application
+      command: npm run build:web
+      args:
+        chdir: "{{ project_dir }}"
+
     - name: Copy Node.js service file
       template:
         src: node.service.j2

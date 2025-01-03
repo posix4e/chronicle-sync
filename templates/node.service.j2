@@ -1,18 +1,19 @@
 [Unit]
-Description=Uvicorn instance for FastAPI app
+Description=Node.js Application Service
 After=network.target
 
 [Service]
 Type=simple
-User=posix4e
-Group=posix4e
+User=root
+Group=root
 WorkingDirectory={{ project_dir }}
 
-# Set environment variables (use quotes for safety)
 Environment="NEW_RELIC_LICENSE_KEY={{ new_relic_license_key }}"
+Environment="NODE_ENV=production"
 
-ExecStart={{ project_dir }}/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
-Restart=on-failure
+ExecStart=/usr/bin/node {{ project_dir }}/server.js
+Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
