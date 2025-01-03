@@ -1,5 +1,5 @@
-const { render, screen, act } = require('@testing-library/react');
-const { HistoryList } = require('../HistoryList');
+import { render, screen, act } from '@testing-library/react';
+import { HistoryList } from '../HistoryList';
 
 const mockExec = jest.fn();
 jest.mock('@chronicle-sync/core', () => ({
@@ -35,11 +35,8 @@ describe('HistoryList', () => {
         deviceId: 'test-device',
       },
     ]);
-    await act(async () => {
-      render(<HistoryList />);
-      await screen.findByText('Example Site');
-    });
-    const link = screen.getByText('Example Site');
+    render(<HistoryList />);
+    const link = await screen.findByText('Example Site');
     expect(link).toBeInTheDocument();
     expect(link.closest('a')).toHaveAttribute('href', 'https://example.com');
   });
