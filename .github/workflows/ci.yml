@@ -27,3 +27,9 @@ jobs:
       
       - name: E2E tests
         run: npm run test:e2e
+      
+      - name: Test builds
+        run: |
+          npm run build:chrome
+          npm run build:firefox
+          npm run build:web
