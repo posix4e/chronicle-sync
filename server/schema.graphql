@@ -1,0 +1,27 @@
+type HistoryEntry {
+  id: ID!
+  url: String!
+  title: String
+  timestamp: Float!
+  deviceId: String!
+  lastModified: Float!
+  deleted: Boolean
+}
+
+input HistoryEntryInput {
+  id: ID!
+  url: String!
+  title: String
+  timestamp: Float!
+  deviceId: String!
+  lastModified: Float!
+  deleted: Boolean
+}
+
+type Query {
+  historyEntries(lastId: String, minTimestamp: Float!): [HistoryEntry!]!
+}
+
+type Mutation {
+  syncHistoryEntries(entries: [HistoryEntryInput!]!): [HistoryEntry!]!
+}

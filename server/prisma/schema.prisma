@@ -1,0 +1,22 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model HistoryEntry {
+  id           String   @id
+  url          String
+  title        String?
+  timestamp    Float
+  deviceId     String
+  lastModified Float
+  deleted      Boolean? @default(false)
+
+  @@index([timestamp])
+  @@index([deviceId])
+  @@index([lastModified])
+}
