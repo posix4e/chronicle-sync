@@ -1,4 +1,4 @@
-import { RxJsonSchema, ExtractDocumentTypeFromTypedRxJsonSchema } from 'rxdb';
+import { ExtractDocumentTypeFromTypedRxJsonSchema } from 'rxdb';
 
 export const historyItemSchema = {
   version: 0,
