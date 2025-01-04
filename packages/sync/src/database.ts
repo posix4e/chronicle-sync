@@ -4,6 +4,7 @@ import {
   RxCollection
 } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
 import { historyItemSchema, HistoryItemDocType } from './schema';
 
 export interface ChronicleCollections {
@@ -18,7 +19,7 @@ export async function createDatabase(
 ): Promise<ChronicleDatabase> {
   const db = await createRxDatabase<ChronicleCollections>({
     name,
-    storage: getRxStorageDexie(),
+    storage: storage === 'memory' ? getRxStorageMemory() : getRxStorageDexie(),
     multiInstance: storage === 'idb',
     ignoreDuplicate: true
   });

@@ -3,6 +3,8 @@ import { SyncManager } from '../sync-manager';
 import { addRxPlugin } from 'rxdb';
 import { firstValueFrom } from 'rxjs';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+import { jest } from '@jest/globals';
+import { Response } from 'node-fetch';
 
 // Add dev mode plugin for better error messages in tests
 addRxPlugin(RxDBDevModePlugin);
@@ -15,24 +17,27 @@ describe('SyncManager', () => {
     deviceId: 'test-device-123'
   };
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     // Use memory adapter for tests
     db = await createDatabase('test-db-' + Date.now(), 'memory');
+    syncManager = new SyncManager(db, testConfig);
+
+    // Mock fetch
+    global.fetch = jest.fn().mockImplementation(
+      () => Promise.resolve(new Response(JSON.stringify([]), { status: 200 }))
+    ) as unknown as typeof fetch;
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
+    if (syncManager) {
+      await syncManager.stop();
+    }
     if (db) {
       await db.destroy();
     }
   });
 
-  beforeEach(() => {
-    syncManager = new SyncManager(db, testConfig);
-  });
 
-  afterEach(async () => {
-    await syncManager.stop();
-  });
 
   it('should initialize with correct configuration', () => {
     expect(syncManager).toBeDefined();
@@ -87,7 +92,7 @@ describe('SyncManager', () => {
   });
 
   it('should respect sync interval configuration', async () => {
-    jest.useFakeTimers();
+    const mockSetTimeout = jest.spyOn(global, 'setTimeout');
     
     const intervalConfig = {
       ...testConfig,
@@ -97,13 +102,10 @@ describe('SyncManager', () => {
     const intervalManager = new SyncManager(db, intervalConfig);
     await intervalManager.start();
 
-    // Fast-forward time
-    jest.advanceTimersByTime(5000);
-
     // Should have triggered a sync
-    expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 5000);
+    expect(mockSetTimeout).toHaveBeenCalledWith(expect.any(Function), 5000);
 
     await intervalManager.stop();
-    jest.useRealTimers();
+    mockSetTimeout.mockRestore();
   });
 });

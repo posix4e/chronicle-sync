@@ -9,11 +9,11 @@ addRxPlugin(RxDBDevModePlugin);
 describe('Database', () => {
   let db: ChronicleDatabase;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     db = await createDatabase('test-db-' + Date.now(), 'memory');
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     if (db) {
       await db.destroy();
     }
@@ -50,12 +50,15 @@ describe('Database', () => {
       // Missing required url field
       title: 'Test Page',
       visitTime: Date.now(),
-      deviceId: 'test-device'
+      deviceId: 'test-device',
+      _deleted: false
     };
+
+    // Remove required field
+    delete (invalidItem as any).deviceId;
 
     // Attempt to insert invalid item
     await expect(
-      // @ts-expect-error - Testing runtime validation
       db.history.insert(invalidItem)
     ).rejects.toThrow();
   });

@@ -18,14 +18,20 @@ export const historyItemSchema = {
       maxLength: 1000
     },
     visitTime: {
-      type: 'number'
+      type: 'number',
+      multipleOf: 1,
+      minimum: 0,
+      maximum: 9007199254740991  // Number.MAX_SAFE_INTEGER
     },
     deviceId: {
       type: 'string',
       maxLength: 100
     },
     syncedAt: {
-      type: 'number'
+      type: 'number',
+      multipleOf: 1,
+      minimum: 0,
+      maximum: 9007199254740991  // Number.MAX_SAFE_INTEGER
     },
     _deleted: {
       type: 'boolean'

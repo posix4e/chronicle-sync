@@ -9,8 +9,8 @@ export interface SyncConfig {
 }
 
 export class SyncManager {
-  private replicationState?: RxCollection<HistoryItem>;
   private syncInterval?: NodeJS.Timeout;
+  private isRunning: boolean = false;
 
   constructor(
     private db: ChronicleDatabase,
@@ -18,28 +18,44 @@ export class SyncManager {
   ) {}
 
   async start() {
-    // Set up live replication
-    this.replicationState = this.db.history;
+    if (this.isRunning) {
+      return this.db.history;
+    }
+
+    this.isRunning = true;
 
     // Set up periodic sync
     await this.sync();
 
     // Set up periodic sync if interval is specified
     if (this.config.syncInterval) {
-      this.syncInterval = setInterval(
-        () => this.sync(),
+      this.syncInterval = setTimeout(
+        () => {
+          this.sync();
+          // Schedule next sync
+          this.syncInterval = setInterval(
+            () => this.sync(),
+            this.config.syncInterval
+          );
+        },
         this.config.syncInterval
       );
     }
 
-    return this.replicationState;
+    return this.db.history;
   }
 
   async stop() {
-    // Nothing to cancel since we're using manual sync
+    if (!this.isRunning) {
+      return;
+    }
+
     if (this.syncInterval) {
       clearInterval(this.syncInterval);
+      this.syncInterval = undefined;
     }
+
+    this.isRunning = false;
   }
 
   private async sync() {
