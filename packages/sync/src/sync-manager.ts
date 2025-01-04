@@ -1,6 +1,5 @@
 import { ChronicleDatabase } from './database';
-import { HistoryItem } from './schema';
-import { RxCollection } from 'rxdb';
+
 
 export interface SyncConfig {
   serverUrl: string;

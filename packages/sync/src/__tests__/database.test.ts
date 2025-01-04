@@ -55,7 +55,7 @@ describe('Database', () => {
     };
 
     // Remove required field
-    delete (invalidItem as any).deviceId;
+    delete (invalidItem as Partial<HistoryItem>).deviceId;
 
     // Attempt to insert invalid item
     await expect(

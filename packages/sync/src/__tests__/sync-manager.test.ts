@@ -1,7 +1,7 @@
 import { createDatabase, ChronicleDatabase } from '../database';
 import { SyncManager } from '../sync-manager';
 import { addRxPlugin } from 'rxdb';
-import { firstValueFrom } from 'rxjs';
+
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { jest } from '@jest/globals';
 import { Response } from 'node-fetch';
