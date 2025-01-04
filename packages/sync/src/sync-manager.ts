@@ -1,6 +1,6 @@
 import { ChronicleDatabase } from './database';
 import { HistoryItem } from './schema';
-import { ReplicationState } from 'rxdb';
+import { RxReplicationState } from 'rxdb/plugins/replication';
 
 export interface SyncConfig {
   serverUrl: string;
@@ -9,7 +9,7 @@ export interface SyncConfig {
 }
 
 export class SyncManager {
-  private replicationState?: ReplicationState<HistoryItem, HistoryItem>;
+  private replicationState?: RxReplicationState<HistoryItem, HistoryItem>;
   private syncInterval?: NodeJS.Timeout;
 
   constructor(
@@ -19,21 +19,23 @@ export class SyncManager {
 
   async start() {
     // Set up live replication
-    this.replicationState = this.db.history.syncCouchDB({
-      remote: this.config.serverUrl,
-      options: {
-        live: true,
-        retry: true
-      },
-      pull: {
-        modifier: (doc) => doc
-      },
+    this.replicationState = replicateRxCollection({
+      collection: this.db.history,
+      replicationIdentifier: `sync-${this.config.deviceId}`,
+      live: true,
+      retryTime: 5000,
+      waitForLeadership: true,
       push: {
+        batchSize: 50,
         modifier: (doc) => ({
           ...doc,
           deviceId: this.config.deviceId,
           syncedAt: Date.now()
         })
+      },
+      pull: {
+        batchSize: 50,
+        modifier: (doc) => doc
       }
     });
 
@@ -59,11 +61,23 @@ export class SyncManager {
 
   private async sync() {
     try {
-      await this.db.history.sync({
-        remote: this.config.serverUrl,
-        options: {
-          live: false,
-          retry: true
+      await replicateRxCollection({
+        collection: this.db.history,
+        replicationIdentifier: `sync-${this.config.deviceId}-${Date.now()}`,
+        live: false,
+        retryTime: 5000,
+        waitForLeadership: true,
+        push: {
+          batchSize: 50,
+          modifier: (doc) => ({
+            ...doc,
+            deviceId: this.config.deviceId,
+            syncedAt: Date.now()
+          })
+        },
+        pull: {
+          batchSize: 50,
+          modifier: (doc) => doc
         }
       });
     } catch (error) {

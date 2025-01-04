@@ -4,18 +4,9 @@ import {
   RxCollection,
   addRxPlugin
 } from 'rxdb';
-import { getRxStoragePouch, addPouchPlugin } from 'rxdb/plugins/pouchdb';
+import { getRxStorage } from 'rxdb/plugins/storage-dexie';
+import { replicateRxCollection } from 'rxdb/plugins/replication';
 import { historyItemSchema, HistoryItemDocType } from './schema';
-
-// Add required plugins
-import { RxDBReplicationPlugin } from 'rxdb/plugins/replication';
-addRxPlugin(RxDBReplicationPlugin);
-
-// Add PouchDB adapters
-import * as PouchDBIdb from 'pouchdb-adapter-idb';
-import * as PouchDBHttp from 'pouchdb-adapter-http';
-addPouchPlugin(PouchDBIdb);
-addPouchPlugin(PouchDBHttp);
 
 export interface ChronicleCollections {
   history: RxCollection<HistoryItemDocType>;
@@ -23,11 +14,14 @@ export interface ChronicleCollections {
 
 export type ChronicleDatabase = RxDatabase<ChronicleCollections>;
 
-export async function createDatabase(name: string): Promise<ChronicleDatabase> {
+export async function createDatabase(
+  name: string,
+  storage: 'idb' | 'memory' = 'idb'
+): Promise<ChronicleDatabase> {
   const db = await createRxDatabase<ChronicleCollections>({
     name,
-    storage: getRxStoragePouch('idb'),
-    multiInstance: true,
+    storage: getRxStorage(),
+    multiInstance: storage === 'idb',
     ignoreDuplicate: true
   });
 
