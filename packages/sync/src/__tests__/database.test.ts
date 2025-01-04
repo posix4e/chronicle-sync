@@ -30,7 +30,8 @@ describe('Database', () => {
       url: 'https://example.com',
       title: 'Test Page',
       visitTime: Date.now(),
-      deviceId: 'test-device'
+      deviceId: 'test-device',
+      _deleted: false
     };
 
     // Insert item
@@ -54,7 +55,7 @@ describe('Database', () => {
 
     // Attempt to insert invalid item
     await expect(
-      // @ts-ignore - Testing runtime validation
+      // @ts-expect-error - Testing runtime validation
       db.history.insert(invalidItem)
     ).rejects.toThrow();
   });
@@ -66,19 +67,22 @@ describe('Database', () => {
         id: 'test-1',
         url: 'https://example1.com',
         visitTime: now - 1000,
-        deviceId: 'device-1'
+        deviceId: 'device-1',
+        _deleted: false
       },
       {
         id: 'test-2',
         url: 'https://example2.com',
         visitTime: now,
-        deviceId: 'device-1'
+        deviceId: 'device-1',
+        _deleted: false
       },
       {
         id: 'test-3',
         url: 'https://example3.com',
         visitTime: now + 1000,
-        deviceId: 'device-2'
+        deviceId: 'device-2',
+        _deleted: false
       }
     ];
 
@@ -108,7 +112,8 @@ describe('Database', () => {
       url: 'https://example.com',
       title: 'Original Title',
       visitTime: Date.now(),
-      deviceId: 'test-device'
+      deviceId: 'test-device',
+      _deleted: false
     };
 
     // Insert item

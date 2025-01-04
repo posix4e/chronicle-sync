@@ -1,11 +1,9 @@
 import {
   createRxDatabase,
   RxDatabase,
-  RxCollection,
-  addRxPlugin
+  RxCollection
 } from 'rxdb';
-import { getRxStorage } from 'rxdb/plugins/storage-dexie';
-import { replicateRxCollection } from 'rxdb/plugins/replication';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { historyItemSchema, HistoryItemDocType } from './schema';
 
 export interface ChronicleCollections {
@@ -20,7 +18,7 @@ export async function createDatabase(
 ): Promise<ChronicleDatabase> {
   const db = await createRxDatabase<ChronicleCollections>({
     name,
-    storage: getRxStorage(),
+    storage: getRxStorageDexie(),
     multiInstance: storage === 'idb',
     ignoreDuplicate: true
   });

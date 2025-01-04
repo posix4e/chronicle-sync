@@ -26,9 +26,12 @@ export const historyItemSchema = {
     },
     syncedAt: {
       type: 'number'
+    },
+    _deleted: {
+      type: 'boolean'
     }
   },
-  required: ['id', 'url', 'visitTime', 'deviceId'],
+  required: ['id', 'url', 'visitTime', 'deviceId', '_deleted'],
   indexes: ['visitTime', 'deviceId', 'syncedAt']
 } as const;
 
@@ -41,4 +44,5 @@ export interface HistoryItem {
   visitTime: number;
   deviceId: string;
   syncedAt?: number;
+  _deleted: boolean;
 }
