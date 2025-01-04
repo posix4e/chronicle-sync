@@ -4,8 +4,8 @@ import {
   RxCollection,
   RxStorage
 } from 'rxdb';
-import { getRxStorageDexie, RxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { getRxStorageMemory, RxStorageMemory } from 'rxdb/plugins/storage-memory';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 import { historyItemSchema, HistoryItemDocType } from './schema';
 
@@ -21,7 +21,7 @@ export async function createDatabase(
 ): Promise<ChronicleDatabase> {
   const baseStorage = storage === 'memory' ? getRxStorageMemory() : getRxStorageDexie();
   const validatedStorage = wrappedValidateAjvStorage({
-    storage: baseStorage as RxStorage<any, any>
+    storage: baseStorage as RxStorage<HistoryItemDocType, HistoryItemDocType>
   });
 
   const db = await createRxDatabase<ChronicleCollections>({
