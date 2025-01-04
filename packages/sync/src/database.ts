@@ -1,8 +1,7 @@
 import {
   createRxDatabase,
   RxDatabase,
-  RxCollection,
-  RxStorage
+  RxCollection
 } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
@@ -21,7 +20,7 @@ export async function createDatabase(
 ): Promise<ChronicleDatabase> {
   const baseStorage = storage === 'memory' ? getRxStorageMemory() : getRxStorageDexie();
   const validatedStorage = wrappedValidateAjvStorage({
-    storage: baseStorage as RxStorage
+    storage: baseStorage as any
   });
 
   const db = await createRxDatabase<ChronicleCollections>({
