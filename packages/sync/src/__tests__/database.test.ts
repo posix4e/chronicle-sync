@@ -44,23 +44,38 @@ describe('Database', () => {
     expect(item!.title).toBe(testItem.title);
   });
 
-  it('should enforce schema validation', async () => {
+  it('should enforce schema validation for missing required fields', async () => {
     const invalidItem = {
       id: 'test-invalid',
-      // Missing required url field
+      url: 'https://example.com',
+      title: 'Test Page',
+      visitTime: Date.now(),
+      _deleted: false
+      // Missing required deviceId field
+    };
+
+    // Attempt to insert invalid item
+    await expect(async () => {
+      // @ts-expect-error - Testing invalid input
+      await db.history.insert(invalidItem);
+    }).rejects.toThrow(/deviceId/);
+  });
+
+  it('should enforce schema validation for missing url field', async () => {
+    const invalidItem = {
+      id: 'test-invalid',
       title: 'Test Page',
       visitTime: Date.now(),
       deviceId: 'test-device',
       _deleted: false
+      // Missing required url field
     };
 
-    // Remove required field
-    delete (invalidItem as Partial<HistoryItem>).deviceId;
-
     // Attempt to insert invalid item
-    await expect(
-      db.history.insert(invalidItem)
-    ).rejects.toThrow();
+    await expect(async () => {
+      // @ts-expect-error - Testing invalid input
+      await db.history.insert(invalidItem);
+    }).rejects.toThrow(/url/);
   });
 
   it('should query items by indexes', async () => {
