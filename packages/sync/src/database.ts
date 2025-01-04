@@ -21,7 +21,7 @@ export async function createDatabase(
 ): Promise<ChronicleDatabase> {
   const baseStorage = storage === 'memory' ? getRxStorageMemory() : getRxStorageDexie();
   const validatedStorage = wrappedValidateAjvStorage({
-    storage: baseStorage as any
+    storage: baseStorage as RxStorage
   });
 
   const db = await createRxDatabase<ChronicleCollections>({
